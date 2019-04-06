@@ -1,9 +1,16 @@
 package com.dome.hibernateDemo;
 
+import java.util.Arrays;
 import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.junit.Test;
@@ -18,15 +25,13 @@ public class test01 {
            session.beginTransaction();
            
            //事务代码
-           User user = new User();
-           user.setUserName("王帅");
-           User user1 = new User();
-           user1.setUserName("王啦");
-           User user2 = new User();
-           user2.setUserName("李想");
-           session.save(user);
-           session.save(user1);
-           session.save(user2);
+           for(int i=0;i<10;i++) {
+        	   User user = new User();
+               user.setUserName("王"+i);
+               session.save(user);
+           }
+           
+           
            
            session.getTransaction().commit();
     }
@@ -153,5 +158,109 @@ public class test01 {
            session.getTransaction().commit();
     }
     
+    @Test  //排序查询
+    public void demo11() {
+           HibernateUtils hibernateUtils = new HibernateUtils();
+           Session session = hibernateUtils.getCurrentSession();
+           session.beginTransaction();
+
+           Query query = session.createQuery("from User order by id desc");
+           List<User> list = query.list();
+           for(User user : list) {
+                  System.out.println(user);
+           }
+           
+           session.getTransaction().commit();
+    }
     
+    @Test  //HQL条件查询
+    public void demo12() {
+           HibernateUtils hibernateUtils = new HibernateUtils();
+           Session session = hibernateUtils.getCurrentSession();
+           session.beginTransaction();
+
+           Query query = session.createQuery("from User where userName like :aaa and password = :bbb");
+           query.setParameter("aaa", "王%");
+           query.setParameter("bbb", "111");
+
+           List<User> list = query.list();
+           for(User user : list) {
+                  System.out.println(user);
+           }
+           
+           session.getTransaction().commit();
+    }
+    
+    			
+    @Test  //HQL投影查询//查询对象的某个或某些属性 
+    public void demo13() {
+           HibernateUtils hibernateUtils = new HibernateUtils();
+           Session session = hibernateUtils.getCurrentSession();
+           session.beginTransaction();
+           
+           //查询多个属性，
+           List<User> list = session.createQuery("select new User(userName,password) from User").list();
+           for (User user : list) {
+			System.out.println(user);
+		}
+           
+           session.getTransaction().commit();
+    }
+    @Test  //HQL分组统计查询 
+    public void demo14() {
+           HibernateUtils hibernateUtils = new HibernateUtils();
+           Session session = hibernateUtils.getCurrentSession();
+           session.beginTransaction();
+           //聚合函数的使用：count(),max(),min(),avg(),sum()都可以
+//           Object object = session.createQuery("select count(*) from User").uniqueResult();
+//			System.out.println(object);
+           List<Object[]> objects = session.createQuery("select password,count(*) from User group by password HAVING count(*)>=2").list();
+           for (Object[] objects2 : objects) {
+			System.out.println(Arrays.toString(objects2));
+		}
+           
+           session.getTransaction().commit();
+    }
+    
+    
+    @Test  
+    public void demo15() {
+           HibernateUtils hibernateUtils = new HibernateUtils();
+           Session session = hibernateUtils.getCurrentSession();
+           session.beginTransaction();
+        
+           CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+           CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+           //指定根条件
+           Root<User> root = criteriaQuery.from(User.class);
+           //创建查询条件
+           Predicate namePredicate = criteriaBuilder.like(root.get("userName"), "王%");
+           criteriaQuery.where(criteriaBuilder.and(namePredicate));
+           
+           List<User> list = session.createQuery(criteriaQuery).list();
+           
+           for (User user : list) {
+			System.out.println(user);
+           }
+
+           session.getTransaction().commit();
+    }
+    @Test  
+    public void demo17() {
+    	//web层
+    	DetachedCriteria detachedcriteria = DetachedCriteria.forClass(User.class);
+    	detachedcriteria.add(Restrictions.like("userName", "王%"));
+    	//dao层
+           HibernateUtils hibernateUtils = new HibernateUtils();
+           Session session = hibernateUtils.getCurrentSession();
+           session.beginTransaction();
+           
+           Criteria criteria = detachedcriteria.getExecutableCriteria(session);
+           List<User> list = criteria.list();
+           for (User user : list) {
+			System.out.println(user);
+           }
+
+           session.getTransaction().commit();
+    }
 }

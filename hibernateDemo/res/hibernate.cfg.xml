@@ -20,6 +20,7 @@
 			<property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
 			<!-- Echo all executed SQL to stdout -->
 			<property name="show_sql">true</property>
+			<property name="format_sql">true</property>
 			
 			<!-- 
 					create：每次加载hibernate时都会删除上一次的生成的表，然后根据你的model类再重新来生成新表，哪怕两次没有任何改变也要这样执行，这就是导致数据库表数据丢失的一个重要原因。
@@ -28,10 +29,23 @@
 					validate ：每次加载hibernate时，验证创建数据库表结构，只会和数据库中的表进行比较，不会创建新表，但是会插入新值。
 			 -->
 			<property name="hbm2ddl.auto">update</property>	
+			
 			<!-- Mapping
 			
 			<mapping resource="com/demo/ex01/entity/Event.hbm.xml"/>
-			 -->
 			<mapping class="com.dome.hibernateDemo.User"/>
+			<mapping class="com.dome.hibernateDemo.Teacher"/>
+			<mapping class="com.dome.hibernateDemo.Student"/>
+			
+			<mapping resource="com/dome/hibernateDemo/Order.hbm.xml"/>
+			<mapping resource="com/dome/hibernateDemo/Customer.hbm.xml"/>
+			
+			 -->
+			 
+			<mapping class="com.dome.hibernateDemo.Teacher"/>
+			<mapping class="com.dome.hibernateDemo.Student"/>
+			<mapping class="com.dome.hibernateDemo.User"/>
+			<mapping resource="com/dome/hibernateDemo/Actor.hbm.xml"/>
+			<mapping resource="com/dome/hibernateDemo/Role.hbm.xml"/>
 	</session-factory>
 </hibernate-configuration>
