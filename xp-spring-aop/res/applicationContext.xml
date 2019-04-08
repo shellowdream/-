@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	<!-- 在配置文件中开启注解的AOP的开发============ -->
+	<aop:aspectj-autoproxy/>
+	
+	<!-- 配置目标类，被增强的对象================ -->
+	<bean id="productDao" class="com.xp_spring_aop.demo1.ProductDaoImpl"></bean>
+	
+	<!-- 配置切面类================ -->
+	<bean id="myAspect" class="com.xp_spring_aop.demo1.MyAspectXML"></bean>
+	
+	
+	<bean id="myAspectAnno" class="com.xp_spring_aop.demo2.MyAspectAnno"></bean>
+	<bean id="orderDao" class="com.xp_spring_aop.demo2.OrderDao"></bean>
+
+<!-- 通过AOP的配置完成对模板类产生代理
+       <aop:config>
+              <aop:pointcut expression="execution(*  com.xp_spring_aop.demo1.ProductDaoImpl.save(..))" id="pointcut1"/>
+              <aop:pointcut expression="execution(*  com.xp_spring_aop.demo1.ProductDaoImpl.delete(..))" id="pointcut2"/>
+              <aop:pointcut expression="execution(*  com.xp_spring_aop.demo1.ProductDaoImpl.update(..))" id="pointcut3"/>
+              <aop:pointcut expression="execution(*  com.xp_spring_aop.demo1.ProductDaoImpl.find(..))" id="pointcut4"/>
+      
+              <aop:aspect ref="myAspect">
+                     <aop:before method="checkPri"  pointcut-ref="pointcut1"></aop:before>
+                     <aop:after-returning method="writeLog" pointcut-ref="pointcut2" returning="result"/>
+                     <aop:around method="around" pointcut-ref="pointcut3"/>
+                     <aop:after-throwing method="afterThrowing" pointcut-ref="pointcut4" throwing="ex"/>
+                     <aop:after method="after" pointcut-ref="pointcut4"/>
+              </aop:aspect>
+       </aop:config>
+	 -->
+</beans> 
