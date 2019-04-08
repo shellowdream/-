@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- package包名 -->
+<hibernate-mapping package="com.dome.hibernateDemo">
+	<class name="Customer" table="t_customer">
+		<id name="cid" column="customer_id">
+			<generator class="native"/>
+		</id>
+		<property name="cname" />
+		<!-- 配置一对多的映射：放置的是多的一方的集合 -->
+		<!-- set标签 的name属性：多的一方的对象集合的属性名称
+			 key标签的 Colum属性：多的一方的外键的名称
+			 one-to-many标签:class:多的一方的类的全路径
+			 inverse="true":放弃外键维护权		 -->
+		<set name="orders" cascade="save-update,delete" inverse="true">
+			<key column="column_id"/>
+			<one-to-many class="com.dome.hibernateDemo.Order"/>
+		</set>
+	</class>
+</hibernate-mapping>

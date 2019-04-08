@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- package包名 -->
+<hibernate-mapping package="com.dome.hibernateDemo">
+	<class name="Actor" table="t_actor">
+		<id name="id" column="actor_id">
+			<generator class="native"/>
+		</id>
+		<property name="name" />
+		<!-- 配置一对多的映射：放置的是多的一方的集合 -->
+		<!-- set标签 的name属性：对方的集合的属性名称
+			table：多对多的关系需要使用中间表，放的是中间表的表名-->
+		<set name="roles" table="sys_actor_role" cascade="save-update">
+			<!-- key的colum放的是当前的对象对应的中间表的外键的名称 -->
+			<key column="actor_id" />
+			<!-- many-to-many 的column放的是对方对象在中间表的外键的名称 -->
+			<many-to-many class="com.dome.hibernateDemo.Role" column="role_id"/>
+		</set>
+	</class>
+</hibernate-mapping>

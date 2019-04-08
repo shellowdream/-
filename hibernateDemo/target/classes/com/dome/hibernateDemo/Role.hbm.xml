@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- package包名 -->
+<hibernate-mapping package="com.dome.hibernateDemo">
+	<class name="Role" table="t_role">
+		<id name="id" column="role_id">
+			<generator class="native"/>
+		</id>
+		<property name="name" />
+		<set name="actors" table="sys_actor_role" inverse="true">
+			<key column="role_id"/>
+			<many-to-many class="com.dome.hibernateDemo.Actor" column="actor_id" />
+		</set>
+	</class>
+</hibernate-mapping>
